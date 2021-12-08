@@ -3,6 +3,8 @@ import cv2 as cv
 import os
 
 import preprocessor as p
+from CharacterRecognizer import interpreter
+from MyNN import myNN
 
 def sample_row(img, row, percent_threshold):
     w, _ = img.size
@@ -160,6 +162,8 @@ def draw_rects(cv_img, rects, color):
         cv.rectangle(cv_img, i[0], i[1], color, 2)
 
 def export_rects(img, rects, folder):
+    neuralNetwork = interpreter()
+    characters = ""
     for i in range(len(rects)):
         section = img.crop((rects[i][0][0],rects[i][0][1],rects[i][1][0],rects[i][1][1]))
 
@@ -173,3 +177,6 @@ def export_rects(img, rects, folder):
         if not os.path.isdir(f"{folder}"):
             os.mkdir(f"{folder}")
         section.save(f"{folder}\\{i}.png")
+
+        characters += neuralNetwork.predicter(section)
+    return characters

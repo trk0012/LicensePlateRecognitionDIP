@@ -4,6 +4,7 @@ import os
 
 import preprocessor as process
 import raycast as ray
+from MyNN import myNN
 
 def driver(filepath):
     # opening the image
@@ -91,7 +92,9 @@ def driver(filepath):
     cv.imwrite(f"{directory}\\{steps}_culled.png", cv_img3)
     steps += 1
 
-    ray.export_rects(img, rects, f"{directory}\\chars")
+    characters = ray.export_rects(img, rects, f"{directory}\\chars")
+
+    print(characters)
 
     print(f"DONE: {filepath}")
 
