@@ -1,7 +1,8 @@
-from PIL.Image import merge, new
 import numpy as np
 import cv2 as cv
 import os
+
+import preprocessor as p
 
 def sample_row(img, row, percent_threshold):
     w, _ = img.size
@@ -146,6 +147,7 @@ def remove_duplicate_rects(rects, threshold):
     for r in rects:
         valid = True
         for c in new_rects:
+            # check if the corners of 2 rects are within some range of each other
             if r[0][0] - c[0][0] <= threshold and r[1][0] - c[1][0] <= threshold:
                 valid = False
                 break
@@ -160,6 +162,14 @@ def draw_rects(cv_img, rects, color):
 def export_rects(img, rects, folder):
     for i in range(len(rects)):
         section = img.crop((rects[i][0][0],rects[i][0][1],rects[i][1][0],rects[i][1][1]))
+
+        # w, h = section.size
+        # l = max(w, h)
+        # section = section.resize((l,l))
+
+        for j in range(3):
+            section = p.clear(section, 4, 4)
+
         if not os.path.isdir(f"{folder}"):
             os.mkdir(f"{folder}")
         section.save(f"{folder}\\{i}.png")

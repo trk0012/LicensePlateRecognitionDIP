@@ -16,6 +16,8 @@ def driver(filepath):
     # create output folder
     directory = filepath.split('.')[0]
     directory = directory.replace("inputs", "outputs")
+    if not os.path.isdir("outputs"):
+        os.mkdir("outputs")
     if not os.path.isdir(f"{directory}"):
         os.mkdir(f"{directory}")
 
@@ -38,12 +40,19 @@ def driver(filepath):
     save(img, "grayscale", directory)
 
     # increase image contrast to make areas clearer
-    img = ImageEnhance.Contrast(img).enhance(10)
+    img = ImageEnhance.Contrast(img).enhance(2)
     save(img, "enhanced", directory)
 
-    # take the image negative so the letters are in white and the background is in black
-    img = process.invert(img)
-    save(img, "negative", directory)
+    # calculate the average intensity of the middle row
+    center = ray.sample_row(ImageEnhance.Contrast(img).enhance(5), int(height/2), 0)
+    avg_value = int(sum(center)/len(center))
+
+    # if the background is bright (i.e. the text is dark), then invert the image 
+    # this ensures that the text will be white on a black background
+    if avg_value > 120:
+        # take the image negative so the letters are in white and the background is in black
+        img = process.invert(img)
+        save(img, "negative", directory)
 
     # blur image to reduce grain
     img = img.filter(ImageFilter.GaussianBlur(radius=5))
@@ -97,9 +106,9 @@ def save(img, filename, folder = ""):
     steps += 1
 
 # run with all inputs
-for f in os.listdir("inputs"):
-    driver(f"inputs\\{f}")
+# for f in os.listdir("inputs"):
+#     driver(f"inputs\\{f}")
 
 # run with 1 input
-# f = os.listdir("inputs")[1]
-# driver(f"inputs\\{f}")
+f = os.listdir("inputs")[19]
+driver(f"inputs\\{f}")
