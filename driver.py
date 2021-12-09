@@ -109,9 +109,9 @@ def save(img, filename, folder = ""):
     steps += 1
 
 # run with all inputs
-# for f in os.listdir("inputs"):
-#     driver(f"inputs\\{f}")
+for f in os.listdir("inputs"):
+    driver(f"inputs\\{f}")
 
 # run with 1 input
-f = os.listdir("inputs")[19]
-driver(f"inputs\\{f}")
+# f = os.listdir("inputs")[18]
+# driver(f"inputs\\{f}")
